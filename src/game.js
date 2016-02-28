@@ -39,6 +39,25 @@ game.state.add("play", {
 
     var skeletonSprite = game.add.sprite(450, 290, 'skeleton');
     skeletonSprite.anchor.setTo(0.5, 0.5);
+
+    var monsterData = [
+      {name: "Aerocephal", image: "aerocephal"},
+      {name: "Arcana Drake", image: "arcana_drake"},
+      {name: "Aurum Drakueli", image: "aurum_drakueli"},
+      {name: "Bat", image: "bat"},
+      {name: "Daemarbora", image: "daemarbora"},
+      {name: "Deceleon", image: "deceleon"},
+      {name: "Demonic Essence", image: "demonic_essence"},
+      {name: "Dune Crawler", image: "dune_crawler"},
+      {name: "Green Slime", image: "green_slime"},
+      {name: "Nagaruda", image: "nagaruda"},
+      {name: "Rat", image: "rat"},
+      {name: "Scorpion", image: "scorpion"},
+      {name: "Skeleton", image: "skeleton"},
+      {name: "Snake", image: "snake"},
+      {name: "Spider", image: "spider"},
+      {name: "Stygian Lizard", image:"stygian_lizard"}
+    ];
   },
   render: function() {
     game.debug.text("Adventure Awaits!", 250, 290);
