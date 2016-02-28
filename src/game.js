@@ -2,7 +2,7 @@ var game = new Phaser.Game(800, 600, Phaser.AUTO, '');
 
 game.state.add("play", {
   preload: function() {
-    game.load.image("skeleton", "assets/allacrost_enemy_sprites/skeleton.png")
+    this.game.load.image("skeleton", "assets/allacrost_enemy_sprites/skeleton.png")
     this.game.load.image('forest-back', 'assets/parallax_forest_pack/layers/parallax-forest-back-trees.png');
     this.game.load.image('forest-lights', 'assets/parallax_forest_pack/layers/parallax-forest-lights.png');
     this.game.load.image('forest-middle', 'assets/parallax_forest_pack/layers/parallax-forest-middle-trees.png');
