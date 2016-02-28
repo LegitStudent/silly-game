@@ -9,11 +9,7 @@ game.state.add("play", {
     this.game.load.image('forest-front', 'assets/parallax_forest_pack/layers/parallax-forest-front-trees.png');
   },
   create: function() {
-    var skeletonSprite = game.add.sprite(450, 290, 'skeleton');
-    skeletonSprite.anchor.setTo(0.5, 0.5);
-
     var state = this;
-
     this.background = this.game.add.group();
 
     ['forest-back', 'forest-lights', 'forest-middle', 'forest-front']
@@ -22,6 +18,9 @@ game.state.add("play", {
           state.game.world.height, image, '', state.background);
         bg.tileScale.setTo(4,4);
       });
+
+    var skeletonSprite = game.add.sprite(450, 290, 'skeleton');
+    skeletonSprite.anchor.setTo(0.5, 0.5);
   },
   render: function() {
     game.debug.text("Adventure Awaits!", 250, 290);
