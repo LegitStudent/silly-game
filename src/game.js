@@ -58,9 +58,37 @@ game.state.add("play", {
       {name: "Spider", image: "spider"},
       {name: "Stygian Lizard", image:"stygian_lizard"}
     ];
+
+    this.monsters = this.game.add.group();
+    var monster;
+
+    monsterData.forEach(function(data)) {
+      // create a sprite for them off screen
+      monster = state.monsters.create(1000, state.game.world.centerY, data.image);
+      // center anchor
+      monster.anchor.setTo(0.5);
+      // reference to the database
+      monster.details = data;
+
+      // enable input so we can click it!
+      monster.inputEnabled = true;
+      monster.events.onInputDown.add(state.onClickMonster, state);
+    }
+
+    this.currentMonster = this.monsters.getRandom();
+    this.currentMonster.position.set(this.game.world.centerX + 100, this.game.world.centerY);
   },
   render: function() {
-    game.debug.text("Adventure Awaits!", 250, 290);
+    game.debug.text("this.currentMonster.details.name",
+      this.game.world.centerX - this.currentMonster.width / 2,
+      this.game.world.centerY + this.currentMonster.height / 2);
+  },
+  onClickMonster: function() {
+    // reset the currentMonster before we move him
+    this.currentMonster.position.set(1000, this.game.world.centerY);
+    // now pick the next in the list, and bring him up
+    this.currentMonster = this.monsters.getRandom();
+    this.currentMonster.position.set(this.game.world.centerX + 100, this.game.world.centerY);
   }
 });
 
