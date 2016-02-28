@@ -6,7 +6,7 @@ game.state.add("play", {
   },
   create: function() {
     var skeletonSprite = game.add.spite(450, 290, 'skeleton');
-    skeletonSpite.anchor.setTo(0.5, 0.5);
+    skeletonSprite.anchor.setTo(0.5, 0.5);
   },
   render: function() {
     game.debug.text("Adventure Awaits!", 250, 290);
