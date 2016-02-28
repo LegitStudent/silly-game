@@ -62,6 +62,8 @@ game.state.add("play", {
     monsterData.forEach(function(data) {
       // create a sprite for them off screen
       monster = state.monsters.create(1000, state.game.world.centerY, data.image);
+      // use the built in health thing
+      monster.health = monster.maxHealth = data.maxHealth;
       // center anchor
       monster.anchor.setTo(0.5);
       // reference to the database
@@ -70,6 +72,10 @@ game.state.add("play", {
       // enable input so we can click it!
       monster.inputEnabled = true;
       monster.events.onInputDown.add(state.onClickMonster, state);
+
+      // hook the health and lifecycle events
+      monster.events.onKilled.add(state.onKilledMonster, state);
+      monster.events.onRevived.add(state.onRevivedMonster, state);
     });
 
     this.currentMonster = this.monsters.getRandom();
@@ -81,21 +87,77 @@ game.state.add("play", {
       gold: 0
     }
 
-    // use the built in health component
-    monster.health = monster.maxHealth = data.maxHealth;
+    this.monsterInfoUI = this.game.add.group();
+    this.monsterInfoUI.position.setTo(this.currentMonster.x - 220,
+       this.currentMonster.y + 120);
+    this.monsterNameText = this.monsterInfoUI.addChild(this.game.add.text(0, 0,
+      this.currentMonster.details.name, {
+        font: '48px Arial Black',
+        fill: '#fff',
+        strokeThickness: 4
+      }));
+    this.monsterHealthText = this.monsterInfoUI.addChild(this.game.add.text(0, 80,
+      this.currentMonster.health + 'HP', {
+        font: '32px Arial Black',
+        fill: '#ff0000',
+        strokeThickness: 4
+      }));
 
-    // hook the health and lifecycle events
-    monster.events.onKilled.add(state.onKilledMonster, state);
-    monster.events.onRevived.add(state.onRevivedMonster, state);
+    this.dmgTextPool = this.add.group();
+    var dmgText;
+    for (var d = 0; d < 50; d++) {
+      dmgText = this.add.text(0, 0, '1', {
+        font: '64px Arial Black',
+        fill: "#fff",
+        strokeThickness: 4
+      });
+    // start out not existing, so we don't draw it yet
+    dmgText.exists = false;
+    dmgText.tween = game.add.tween(dmgText)
+      .to({
+        alpha: 0,
+        y: 100,
+        x: this.game.rnd.integerInRange(100, 700)
+      }, 1000, Phaser.Easing.Cubic.Out);
+
+    dmgText.tween.onComplete.add(function(text, tween) {
+      text.kill();
+    });
+    this.dmgTextPool.add(dmgText);
+    }
   },
   render: function() {
-    game.debug.text(this.currentMonster.details.name,
+    /*game.debug.text(this.currentMonster.details.name,
       this.game.world.centerX - this.currentMonster.width / 2,
-      this.game.world.centerY + this.currentMonster.height / 2);
+      this.game.world.centerY + this.currentMonster.height / 2); */
   },
-  onClickMonster: function() {
+  onClickMonster: function(monster, pointer) {
+    var dmgText = this.dmgTextPool.getFirstExists(false);
+    if (dmgText) {
+      dmgText.text = this.player.clickDmg;
+      dmgText.reset(pointer.positionDown.x, pointer.positionDown.y);
+      dmgText.alpha = 1;
+      dmgText.tween.start();
+    }
+
     // apply click damage to monster
     this.currentMonster.damage(this.player.clickDmg);
+    // update the health text
+    this.monsterHealthText.text = (this.currentMonster.alive ? this.currentMonster.health + 'HP' : 'DEAD');
+  },
+  onKilledMonster: function(monster) {
+    monster.position.set(1000, this.game.world.centerY);
+
+    this.currentMonster = this.monsters.getRandom();
+
+    this.currentMonster.revive(this.currentMonster.maxHealth);
+  },
+  onRevivedMonster: function(monster) {
+    monster.position.set(this.game.world.centerX + 100, this.game.world.centerY);
+
+    // update the text display
+    this.monsterNameText.text = monster.details.name;
+    this.monsterHealthText.text = monster.health + 'HP';
   }
 });
 
